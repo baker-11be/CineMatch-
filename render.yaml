@@ -1,0 +1,32 @@
+# ============================================================================
+# Render Blueprint — CineMatch
+# ----------------------------------------------------------------------------
+# CineMatch is a *plain static site*: plain HTML/CSS/JS modules that call the
+# TMDB API directly from the browser. There is no compile/bundle step, so the
+# published output is simply the repository root.
+#
+# HOW TO USE THIS FILE
+#   * If you create a "Blueprint" service from this repo (Dashboard: New >
+#     Blueprint), Render reads these values automatically.
+#   * If your service already exists (created manually), this file is not
+#     applied automatically — instead copy these values into the dashboard:
+#       Settings > Build & Deploy
+#         Branch:            main
+#         Build Command:     npm install && npm run build   (see note below)
+#         Publish Directory: .   (the repo root)
+#
+# NOTE ON THE BUILD COMMAND
+#   The repo's package.json defines a no-op `build` script, so
+#   `npm install && npm run build` succeeds and emits the static files as-is.
+#   Because there are no dependencies, you can also leave the Build Command
+#   completely empty — either way the repo root is served.
+# ============================================================================
+
+services:
+  - type: web
+    name: cinematch
+    runtime: static
+    branch: main
+    autoDeploy: true
+    buildCommand: npm install && npm run build
+    staticPublishPath: .
