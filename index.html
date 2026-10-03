@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>CineMatch | Discover Trending Movies &amp; TV Shows</title>
+
+    <meta name="description" content="CineMatch is a clean, ad-free way to explore trending movies, search titles, filter by genre, and build your personal watchlist.">
+    <meta name="author" content="Baker Mfitundinda">
+    <meta name="theme-color" content="#121212">
+
+    <meta property="og:title" content="CineMatch | Discover Trending Movies">
+    <meta property="og:description" content="Explore trending movies in one clean, ad-free place.">
+    <meta property="og:type" content="website">
+
+    <link rel="icon" href="images/favicon.svg" type="image/svg+xml">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="styles.css">
+
+    <script type="module" src="main.js"></script>
+</head>
+
+<body>
+
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+
+    <header class="site-header">
+        <div class="header-inner">
+
+            <a class="logo-link" href="index.html" aria-label="CineMatch home">
+                <span class="logo-mark" aria-hidden="true">🎬</span>
+                <span class="site-name">CineMatch</span>
+            </a>
+
+            <button
+                id="hamburger"
+                type="button"
+                aria-label="Toggle navigation menu"
+                aria-expanded="false"
+                aria-controls="primary-nav">
+                ☰
+            </button>
+
+        </div>
+    </header>
+
+    <nav id="primary-nav" aria-label="Main navigation">
+        <ul>
+            <li><a href="index.html" class="active">Home</a></li>
+            <li><a href="#watchlist">Watchlist</a></li>
+            <li><a href="#watched">Watched</a></li>
+        </ul>
+    </nav>
+
+    <main id="main-content" tabindex="-1">
+
+        <section class="filter-bar" aria-label="Search and filter controls">
+            <label class="visually-hidden" for="search-input">Search movies</label>
+            <input
+                id="search-input"
+                type="search"
+                placeholder="Search movies… (coming soon)"
+                autocomplete="off"
+                disabled
+                title="Search arrives in Week 6">
+
+            <label class="visually-hidden" for="genre-select">Filter by genre</label>
+            <select id="genre-select" disabled title="Genre filter arrives in Week 6">
+                <option value="">All Genres</option>
+            </select>
+        </section>
+
+        <section class="results" aria-labelledby="results-heading">
+            <h1 id="results-heading" class="section-heading">Trending Today</h1>
+
+            <p id="status-message" class="status" role="status" aria-live="polite">
+                Loading trending movies…
+            </p>
+
+            <div id="movie-grid" class="movie-grid"></div>
+        </section>
+
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-inner">
+
+            <p class="footer-brand">CineMatch</p>
+
+            <p class="footer-note">
+                Movie data provided by
+                <a href="https://www.themoviedb.org/" target="_blank" rel="noopener noreferrer">TMDB</a>.
+                This product uses the TMDB API 
+            </p>
+
+            <p class="footer-copy">&copy; 2026 CineMatch. Baker Mfitundinda.</p>
+
+        </div>
+    </footer>
+
+</body>
+</html>

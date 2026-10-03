@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="500" height="750" viewBox="0 0 500 750" role="img" aria-label="Poster not available">
+    <rect width="500" height="750" fill="#1F1F1F"/>
+    <g fill="none" stroke="#3a3a3a" stroke-width="6">
+        <rect x="150" y="250" width="200" height="150" rx="12"/>
+        <circle cx="250" cy="325" r="30"/>
+    </g>
+    <g fill="#E50914">
+        <circle cx="185" cy="285" r="9"/>
+        <circle cx="315" cy="285" r="9"/>
+        <circle cx="185" cy="365" r="9"/>
+        <circle cx="315" cy="365" r="9"/>
+    </g>
+    <text x="250" y="470" fill="#9aa0a6" font-family="Inter, system-ui, sans-serif" font-size="26" font-weight="700" text-anchor="middle">No Poster</text>
+    <text x="250" y="505" fill="#6b6b6b" font-family="Inter, system-ui, sans-serif" font-size="18" text-anchor="middle">CineMatch</text>
+</svg>

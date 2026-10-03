@@ -1,0 +1,19 @@
+# Dependencies
+node_modules/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+*.log
+
+# Local environment / secrets (keep real keys out of the repo)
+.env
+.env.*
+config.local.js
+
+# Editor / OS files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
