@@ -1,10 +1,9 @@
+
 // ============================================================================
-// CineMatch — TMDB API configuration TEMPLATE
+// CineMatch — TMDB API configuration template
 // ----------------------------------------------------------------------------
-// Copy this file to `config.js` and paste your own TMDB v3 API key:
-//
-//     copy config.example.js config.js      (Windows)
-//     cp config.example.js config.js        (macOS / Linux)
+// The local build reads TMDB_API_KEY from a git-ignored .env file.
+// This fallback is used when the build environment does not provide a key.
 //
 // Get a free key here: https://www.themoviedb.org/settings/api
 // ============================================================================
