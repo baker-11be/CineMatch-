@@ -13,6 +13,7 @@ yarn-error.log*
 # Local environment / secrets (keep real keys out of the repo)
 .env
 .env.*
+!.env.example
 config.local.js
 
 # Editor / OS files

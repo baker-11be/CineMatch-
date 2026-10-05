@@ -36,8 +36,15 @@ for (const dir of DIRS) {
     await cp(join(root, dir), join(dist, dir), { recursive: true });
 }
 
+// Local builds: load TMDB_API_KEY from a git-ignored .env file (Node >= 20.12).
+// On Render the variable is already provided by the dashboard's Environment tab.
+const envFile = join(root, '.env');
+if (!process.env.TMDB_API_KEY && existsSync(envFile) && typeof process.loadEnvFile === 'function') {
+    process.loadEnvFile(envFile);
+}
+
 const apiKey = process.env.TMDB_API_KEY;
-if (apiKey) {
+if (apiKey && apiKey.trim() !== 'YOUR_TMDB_API_KEY_HERE') {
     await writeFile(
         join(dist, 'config.js'),
         `export const API_KEY = ${JSON.stringify(apiKey.trim())};\n`
