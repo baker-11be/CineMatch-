@@ -2,10 +2,17 @@
   "name": "cinematch",
   "version": "1.0.0",
   "private": true,
-  "description": "CineMatch - a static, ad-free movie discovery app powered by the TMDB API.",
+  "description": "CineMatch - a static, ad-free movie discovery app powered by the TMDB API",
   "license": "MIT",
   "scripts": {
     "start": "npx --yes serve .",
-    "build": "echo \"CineMatch is a static site - no build step required.\""
+    "build": "node scripts/build.mjs",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.0",
+    "eslint": "^10.12.0",
+    "globals": "^17.0.0"
   }
 }
+
