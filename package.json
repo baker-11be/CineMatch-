@@ -5,7 +5,7 @@
   "description": "CineMatch - a static, ad-free movie discovery app powered by the TMDB API",
   "license": "MIT",
   "scripts": {
-    "start": "npx --yes serve .",
+    "start": "npm run build && npx --yes serve dist",
     "build": "node scripts/build.mjs",
     "lint": "eslint ."
   },
@@ -15,4 +15,3 @@
     "globals": "^17.0.0"
   }
 }
-

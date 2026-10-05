@@ -27,4 +27,3 @@ services:
     envVars:
       - key: TMDB_API_KEY
         sync: false
-

@@ -51,27 +51,35 @@
 
     <nav id="primary-nav" aria-label="Main navigation">
         <ul>
-            <li><a href="index.html" class="active">Home</a></li>
-            <li><a href="#watchlist">Watchlist</a></li>
-            <li><a href="#watched">Watched</a></li>
+            <li><a href="#home" data-view="home" class="active">Home</a></li>
+            <li><a href="#watchlist" data-view="watchlist">Watchlist</a></li>
+            <li><a href="#watched" data-view="watched">Watched</a></li>
         </ul>
     </nav>
 
     <main id="main-content" tabindex="-1">
 
         <section class="filter-bar" aria-label="Search and filter controls">
-            <label class="visually-hidden" for="search-input">Search movies</label>
-            <input
-                id="search-input"
-                type="search"
-                placeholder="Search movies… (coming soon)"
-                autocomplete="off"
-                disabled
-                title="Search arrives in Week 6">
+            <form class="search-form" role="search">
+                <label class="visually-hidden" for="search-input">Search movies</label>
+                <input
+                    id="search-input"
+                    type="search"
+                    placeholder="Search movies…"
+                    autocomplete="off">
+                <button class="search-button" type="submit">Search</button>
+            </form>
 
             <label class="visually-hidden" for="genre-select">Filter by genre</label>
-            <select id="genre-select" disabled title="Genre filter arrives in Week 6">
+            <select id="genre-select">
                 <option value="">All Genres</option>
+            </select>
+
+            <label class="visually-hidden" for="sort-select">Sort movies</label>
+            <select id="sort-select" aria-label="Sort movies">
+                <option value="default">Sort: Recommended</option>
+                <option value="release-date">Release date: Newest</option>
+                <option value="rating">Rating: Highest</option>
             </select>
         </section>
 
@@ -86,6 +94,34 @@
         </section>
 
     </main>
+
+    <dialog id="movie-dialog" class="movie-dialog" aria-labelledby="dialog-title">
+        <div class="dialog-content">
+            <button id="dialog-close" class="dialog-close" type="button" aria-label="Close movie details">×</button>
+            <img id="dialog-backdrop" class="dialog-backdrop" alt="">
+            <div class="dialog-details">
+                <p id="dialog-meta" class="dialog-meta"></p>
+                <h2 id="dialog-title"></h2>
+                <p id="dialog-overview" class="dialog-overview"></p>
+                <div class="dialog-actions">
+                    <button id="dialog-watchlist" class="action-button action-primary" type="button"></button>
+                    <button id="dialog-watched" class="action-button" type="button"></button>
+                </div>
+                <div class="rating-controls">
+                    <label for="personal-rating">Your rating</label>
+                    <select id="personal-rating">
+                        <option value="">Choose 1–5 stars</option>
+                        <option value="1">1 star</option>
+                        <option value="2">2 stars</option>
+                        <option value="3">3 stars</option>
+                        <option value="4">4 stars</option>
+                        <option value="5">5 stars</option>
+                    </select>
+                    <button id="save-rating" class="action-button" type="button">Save rating</button>
+                </div>
+            </div>
+        </div>
+    </dialog>
 
     <footer class="site-footer">
         <div class="footer-inner">

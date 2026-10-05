@@ -192,6 +192,7 @@ button {
 
 main {
     width: 100%;
+    min-width: 0;
     max-width: var(--max-width);
     margin: 0 auto;
     padding: 1.25rem 1rem 2.5rem;
@@ -205,15 +206,42 @@ main {
     margin-bottom: 1.5rem;
 }
 
+.search-form {
+    display: flex;
+    flex: 2 1 280px;
+    gap: 0.5rem;
+    min-width: 0;
+}
+
 .filter-bar input[type="search"],
 .filter-bar select {
     flex: 1 1 220px;
     min-width: 0;
+    min-height: 2.75rem;
     padding: 0.65rem 0.8rem;
     color: var(--color-text);
     background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: var(--radius);
+}
+
+.search-form input[type="search"] {
+    min-width: 0;
+}
+
+.search-button {
+    min-height: 2.75rem;
+    padding: 0.55rem 1rem;
+    color: var(--color-text);
+    background: var(--color-accent);
+    border: 1px solid var(--color-accent);
+    border-radius: var(--radius);
+    font-weight: 700;
+}
+
+.search-button:hover {
+    background: var(--color-accent-hover);
+    border-color: var(--color-accent-hover);
 }
 
 .filter-bar input::placeholder {
@@ -224,6 +252,10 @@ main {
 .filter-bar select:disabled {
     opacity: 0.55;
     cursor: not-allowed;
+}
+
+.filter-bar[hidden] {
+    display: none;
 }
 
 .section-heading {
@@ -241,9 +273,8 @@ main {
 
 .movie-grid {
     display: grid;
-    /* Responsive auto-fit grid: as many columns as fit at a 140px minimum. */
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
-    gap: 1rem;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.75rem;
 }
 
 .movie-card {
@@ -278,7 +309,7 @@ main {
 }
 
 .movie-title {
-    font-size: 0.95rem;
+    font-size: clamp(0.85rem, 2vw, 0.95rem);
     line-height: 1.25;
     margin-bottom: 0.3rem;
     display: -webkit-box;
@@ -305,6 +336,132 @@ main {
     color: #ffd166;
     font-size: 0.75rem;
     font-weight: 700;
+}
+
+.movie-actions {
+    display: grid;
+    gap: 0.45rem;
+    margin-top: 0.75rem;
+}
+
+.action-button {
+    min-height: 2.35rem;
+    padding: 0.4rem 0.6rem;
+    color: var(--color-text);
+    background: #303030;
+    border: 1px solid #484848;
+    border-radius: 7px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    text-align: center;
+}
+
+.action-button:hover {
+    background: #3a3a3a;
+}
+
+.action-primary {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+}
+
+.action-primary:hover {
+    background: var(--color-accent-hover);
+}
+
+.movie-dialog {
+    width: min(92vw, 760px);
+    max-height: min(90vh, 900px);
+    margin: auto;
+    padding: 0;
+    color: var(--color-text);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    overflow: auto;
+}
+
+.movie-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.82);
+    backdrop-filter: blur(3px);
+}
+
+.dialog-content {
+    position: relative;
+}
+
+.dialog-close {
+    position: absolute;
+    z-index: 1;
+    top: 0.75rem;
+    right: 0.75rem;
+    width: 2.5rem;
+    height: 2.5rem;
+    color: white;
+    background: rgba(0, 0, 0, 0.75);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 50%;
+    font-size: 1.6rem;
+    line-height: 1;
+}
+
+.dialog-backdrop {
+    width: 100%;
+    max-height: 300px;
+    object-fit: cover;
+    background: #0d0d0d;
+}
+
+.dialog-backdrop[hidden] {
+    display: none;
+}
+
+.dialog-details {
+    padding: 1.25rem;
+}
+
+.dialog-meta {
+    margin-bottom: 0.4rem;
+    color: var(--color-muted);
+}
+
+.dialog-details h2 {
+    margin-bottom: 0.75rem;
+    font-size: 1.65rem;
+    line-height: 1.2;
+}
+
+.dialog-overview {
+    color: #e0e0e0;
+    white-space: pre-line;
+}
+
+.dialog-actions,
+.rating-controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.65rem;
+    margin-top: 1rem;
+}
+
+.rating-controls {
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border);
+}
+
+.rating-controls label {
+    font-weight: 700;
+}
+
+.rating-controls select {
+    min-height: 2.35rem;
+    padding: 0.4rem 0.6rem;
+    color: var(--color-text);
+    background: #303030;
+    border: 1px solid #484848;
+    border-radius: 7px;
 }
 
 /* ---- Footer ------------------------------------------------------------- */
@@ -355,6 +512,30 @@ main {
     .section-heading {
         font-size: 1.9rem;
     }
+
+}
+
+@media (max-width: 360px) {
+    .search-form {
+        flex-basis: 100%;
+    }
+
+    .search-button {
+        padding-inline: 0.7rem;
+    }
+
+    .movie-info {
+        padding: 0.6rem;
+    }
+
+    .movie-actions .action-button {
+        padding-inline: 0.35rem;
+        font-size: 0.75rem;
+    }
+
+    .dialog-details {
+        padding: 1rem;
+    }
 }
 
 /* Expand the navigation into a horizontal bar on wider screens. */
@@ -398,5 +579,16 @@ main {
     .movie-grid {
         grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
         gap: 1.5rem;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        scroll-behavior: auto !important;
+        transition-duration: 0.01ms !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
     }
 }

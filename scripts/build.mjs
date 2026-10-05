@@ -17,7 +17,14 @@ import { fileURLToPath } from 'node:url';
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 const dist = join(root, 'dist');
 
-const FILES = ['index.html', 'styles.css', 'main.js', 'tmdbApi.js', 'config.js'];
+const FILES = [
+    'index.html',
+    'styles.css',
+    'main.js',
+    'tmdbApi.js',
+    'storage.js',
+    'config.js'
+];
 const DIRS = ['images'];
 
 await rm(dist, { recursive: true, force: true });

@@ -83,66 +83,46 @@ async function tmdbFetch(endpoint, params = {}) {
 }
 
 /**
- * Trending movies for the day or week. Returns [] on any error.
+ * Trending movies for the day or week. Throws when TMDB cannot be reached.
  * @param {'day'|'week'} [timeWindow]
  * @returns {Promise<Array>}
  */
 export async function getTrendingMovies(timeWindow = 'day') {
-    try {
-        const data = await tmdbFetch(`/trending/movie/${timeWindow}`);
-        return Array.isArray(data.results) ? data.results : [];
-    } catch (error) {
-        console.error('[tmdbApi] getTrendingMovies failed:', error);
-        return [];
-    }
+    const data = await tmdbFetch(`/trending/movie/${timeWindow}`);
+    return Array.isArray(data.results) ? data.results : [];
 }
 
 /**
- * Search movies by title. Returns [] on any error.
+ * Search movies by title. Throws when TMDB cannot be reached.
  * @param {string} query
  * @param {number} [page]
  * @returns {Promise<Array>}
  */
 export async function searchMovies(query, page = 1) {
-    try {
-        const data = await tmdbFetch('/search/movie', {
-            query,
-            page,
-            include_adult: false
-        });
-        return Array.isArray(data.results) ? data.results : [];
-    } catch (error) {
-        console.error('[tmdbApi] searchMovies failed:', error);
-        return [];
-    }
+    const data = await tmdbFetch('/search/movie', {
+        query,
+        page,
+        include_adult: false
+    });
+    return Array.isArray(data.results) ? data.results : [];
 }
 
 /**
  * Discover movies using TMDB discover filters (genres, sorting, etc.).
- * Returns [] on any error.
+ * Throws when TMDB cannot be reached.
  * @param {Object} [params] - e.g. { with_genres: '28', sort_by: 'vote_average.desc' }
  * @returns {Promise<Array>}
  */
 export async function discoverMovies(params = {}) {
-    try {
-        const data = await tmdbFetch('/discover/movie', params);
-        return Array.isArray(data.results) ? data.results : [];
-    } catch (error) {
-        console.error('[tmdbApi] discoverMovies failed:', error);
-        return [];
-    }
+    const data = await tmdbFetch('/discover/movie', params);
+    return Array.isArray(data.results) ? data.results : [];
 }
 
 /**
- * The official TMDB genre list: [{ id, name }, ...]. Returns [] on any error.
+ * The official TMDB genre list: [{ id, name }, ...]. Throws on request errors.
  * @returns {Promise<Array>}
  */
 export async function getGenres() {
-    try {
-        const data = await tmdbFetch('/genre/movie/list');
-        return Array.isArray(data.genres) ? data.genres : [];
-    } catch (error) {
-        console.error('[tmdbApi] getGenres failed:', error);
-        return [];
-    }
+    const data = await tmdbFetch('/genre/movie/list');
+    return Array.isArray(data.genres) ? data.genres : [];
 }
