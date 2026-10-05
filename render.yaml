@@ -1,25 +1,19 @@
 # ============================================================================
 # Render Blueprint — CineMatch
 # ----------------------------------------------------------------------------
-# CineMatch is a *plain static site*: plain HTML/CSS/JS modules that call the
-# TMDB API directly from the browser. There is no compile/bundle step, so the
-# published output is simply the repository root.
+# CineMatch is a *plain static site* (HTML/CSS/JS modules calling the TMDB API
+# from the browser). `npm run build` (scripts/build.mjs) copies the site files
+# into ./dist, and Render publishes that folder.
 #
-# HOW TO USE THIS FILE
-#   * If you create a "Blueprint" service from this repo (Dashboard: New >
-#     Blueprint), Render reads these values automatically.
-#   * If your service already exists (created manually), this file is not
-#     applied automatically — instead copy these values into the dashboard:
-#       Settings > Build & Deploy
-#         Branch:            main
-#         Build Command:     npm install && npm run build   (see note below)
-#         Publish Directory: .   (the repo root)
+# DASHBOARD SETTINGS (Settings > Build & Deploy) if the service was created
+# manually:
+#     Branch:            main
+#     Build Command:     npm install && npm run build
+#     Publish Directory: dist
 #
-# NOTE ON THE BUILD COMMAND
-#   The repo's package.json defines a no-op `build` script, so
-#   `npm install && npm run build` succeeds and emits the static files as-is.
-#   Because there are no dependencies, you can also leave the Build Command
-#   completely empty — either way the repo root is served.
+# ENVIRONMENT (Settings > Environment):
+#     TMDB_API_KEY = <your TMDB v3 API key>
+#   The build writes it into dist/config.js so the key is not stored in git.
 # ============================================================================
 
 services:
@@ -29,4 +23,8 @@ services:
     branch: main
     autoDeploy: true
     buildCommand: npm install && npm run build
-    staticPublishPath: .
+    staticPublishPath: dist
+    envVars:
+      - key: TMDB_API_KEY
+        sync: false
+

@@ -81,6 +81,27 @@ Then open <http://localhost:8000>.
 4. Throttle the network to "Slow 3G" in DevTools to check the loading/empty
    status messages behave (the status line is an `aria-live` region).
 
+## Build & deploy (Render)
+
+```powershell
+npm install
+npm run lint     # style/syntax check
+npm run build    # copies the site into ./dist (git-ignored)
+```
+
+Render Static Site settings:
+
+| Setting           | Value                             |
+| ----------------- | --------------------------------- |
+| Branch            | `main`                            |
+| Build Command     | `npm install && npm run build`    |
+| Publish Directory | `dist`                            |
+| Env var           | `TMDB_API_KEY` = your TMDB v3 key |
+
+The build writes `TMDB_API_KEY` into `dist/config.js`, so the real key does not
+need to be committed. Render redeploys whenever `main` changes, so merge your
+`Cinematch-week5` branch into `main` for the fix to go live.
+
 ## Roadmap
 
 - **Week 6:** search input, genre filter dropdown, movie detail modal, and
