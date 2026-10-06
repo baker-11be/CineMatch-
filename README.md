@@ -104,7 +104,8 @@ npm start
 This builds the application into `dist/`, reads the local `.env`, and serves
 the built site. Open the URL printed by the server. If you see a message that
 `TMDB_API_KEY` is not set, search and movie data cannot load until the key is
-configured.
+configured. If TMDB returns HTTP 401, replace the key with a valid TMDB **API
+Key (v3 auth)**; a key that is present but invalid will still be rejected.
 
 ## Testing the API connection (Card 5)
 
@@ -133,9 +134,12 @@ Render Static Site settings:
 | Publish Directory | `dist`                            |
 | Env var           | `TMDB_API_KEY` = your TMDB v3 key |
 
-The build writes `TMDB_API_KEY` into `dist/config.js`, so the real key does not
-need to be committed. Render redeploys whenever `main` changes, so merge your
-`Cinematch-week5` branch into `main` for the fix to go live.
+In the Render dashboard, open the CineMatch static site, go to **Environment**,
+and add `TMDB_API_KEY` with your TMDB **API Key (v3 auth)** value. Save the
+change and trigger a deploy. The build now fails instead of publishing a site
+without a key. The build writes the configured key into `dist/config.js`; it
+must not be committed. Because this is a browser-only app, the key is visible
+to site visitors, so rotate any key that has been shared or exposed.
 
 ## Remaining project work
 
