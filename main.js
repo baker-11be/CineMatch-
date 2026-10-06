@@ -52,6 +52,16 @@ function setStatus(text) {
         : text;
 }
 
+function apiErrorGuidance(error) {
+    if (error instanceof Error && /TMDB request failed \(401\)/.test(error.message)) {
+        return 'TMDB rejected the API key (HTTP 401). Replace TMDB_API_KEY in Render > Environment with a valid TMDB API Key (v3 auth), save, and redeploy.';
+    }
+    if (error instanceof Error && error.message.includes('Missing TMDB API key')) {
+        return 'TMDB_API_KEY is missing from this deployment. Add it in Render > Environment, then redeploy.';
+    }
+    return `Check your TMDB API key or connection and try again. ${error instanceof Error ? error.message : 'Unknown error.'}`;
+}
+
 function isSaved(movieId) {
     return state.watchlist.some((movie) => String(movie.id) === String(movieId));
 }
@@ -174,16 +184,18 @@ function renderMovies() {
     const movies = sortedMovies(currentMovies());
     grid.replaceChildren();
 
-    if (state.currentView === 'home') {
-        resultsHeading.textContent = searchInput.value.trim()
-            ? 'Search Results'
-            : genreSelect.value
-                ? `${genreSelect.selectedOptions[0].text} Movies`
-                : 'Trending Today';
-    } else {
-        resultsHeading.textContent = state.currentView === 'watched'
-            ? 'Watched Movies'
-            : 'Your Watchlist';
+    if (resultsHeading) {
+        if (state.currentView === 'home') {
+            resultsHeading.textContent = searchInput.value.trim()
+                ? 'Search Results'
+                : genreSelect.value
+                    ? `${genreSelect.selectedOptions[0].text} Movies`
+                    : 'Trending Today';
+        } else {
+            resultsHeading.textContent = state.currentView === 'watched'
+                ? 'Watched Movies'
+                : 'Your Watchlist';
+        }
     }
 
     if (movies.length === 0) {
@@ -255,33 +267,59 @@ function openMovieDetails(movie) {
     state.selectedMovie = movie;
     const title = movie.title || movie.name || 'Untitled';
     const backdrop = backdropUrl(movie.backdrop_path);
-    dialogTitle.textContent = title;
-    dialogMeta.textContent =
-        `${formatYear(movie.release_date)} · TMDB ★ ${formatRating(movie.vote_average)}`;
-    dialogOverview.textContent = movie.overview || 'No overview is available for this title.';
-    dialogBackdrop.hidden = !backdrop;
-    if (backdrop) dialogBackdrop.src = backdrop;
+
+    if (dialogTitle) dialogTitle.textContent = title;
+    if (dialogMeta) {
+        dialogMeta.textContent =
+            `${formatYear(movie.release_date)} · TMDB ★ ${formatRating(movie.vote_average)}`;
+    }
+    if (dialogOverview) {
+        dialogOverview.textContent = movie.overview || 'No overview is available for this title.';
+    }
+    if (dialogBackdrop) {
+        dialogBackdrop.hidden = !backdrop;
+        if (backdrop) dialogBackdrop.src = backdrop;
+    }
+
     const saved = savedMovie(movie.id);
-    dialogWatchlist.textContent = saved ? 'Remove from Watchlist' : 'Add to Watchlist';
-    dialogWatched.textContent = saved?.watched ? 'Mark as unwatched' : 'Mark as watched';
-    personalRating.value = saved?.personalRating ? String(saved.personalRating) : '';
-    movieDialog.showModal();
+    if (dialogWatchlist) {
+        dialogWatchlist.textContent = saved ? 'Remove from Watchlist' : 'Add to Watchlist';
+    }
+    if (dialogWatched) {
+        dialogWatched.textContent = saved?.watched ? 'Mark as unwatched' : 'Mark as watched';
+    }
+    if (personalRating) {
+        personalRating.value = saved?.personalRating ? String(saved.personalRating) : '';
+    }
+    if (movieDialog && typeof movieDialog.showModal === 'function') {
+        movieDialog.showModal();
+    }
 }
 
 function updateDialog() {
     if (!state.selectedMovie) return;
     const saved = savedMovie(state.selectedMovie.id);
-    dialogWatchlist.textContent = saved ? 'Remove from Watchlist' : 'Add to Watchlist';
-    dialogWatched.textContent = saved?.watched ? 'Mark as unwatched' : 'Mark as watched';
-    personalRating.value = saved?.personalRating ? String(saved.personalRating) : '';
+    if (dialogWatchlist) {
+        dialogWatchlist.textContent = saved ? 'Remove from Watchlist' : 'Add to Watchlist';
+    }
+    if (dialogWatched) {
+        dialogWatched.textContent = saved?.watched ? 'Mark as unwatched' : 'Mark as watched';
+    }
+    if (personalRating) {
+        personalRating.value = saved?.personalRating ? String(saved.personalRating) : '';
+    }
 }
 
 function setView(view) {
     state.currentView = ['home', 'watchlist', 'watched'].includes(view) ? view : 'home';
     state.requestId += 1;
     if (grid) grid.removeAttribute('aria-busy');
+
     const filterBar = document.querySelector('.filter-bar');
-    filterBar.hidden = state.currentView !== 'home';
+    if (filterBar) {
+        filterBar.hidden = state.currentView !== 'home';
+    }
+
     document.querySelectorAll('#primary-nav a').forEach((link) => {
         const isActive = link.dataset.view === state.currentView;
         link.classList.toggle('active', isActive);
@@ -323,7 +361,7 @@ async function fetchHomeMovies() {
         console.error('[CineMatch] Movie search failed:', error);
         state.homeMovies = [];
         grid.replaceChildren();
-        setStatus(`Movie search failed. Check your TMDB API key or connection and try again. ${error.message}`);
+        setStatus(`Movie search failed. ${apiErrorGuidance(error)}`);
     } finally {
         if (requestId === state.requestId && grid) {
             grid.removeAttribute('aria-busy');
@@ -372,7 +410,11 @@ async function loadInitialData() {
         renderMovies();
     }
     if (failures.length > 0 && state.currentView === 'home') {
-        setStatus(`${failures.join(' ')} Check your TMDB API key or connection and try again.`);
+        const failureReasons = [moviesResult, genresResult]
+            .filter((result) => result.status === 'rejected')
+            .map((result) => result.reason);
+        const guidance = apiErrorGuidance(failureReasons[0]);
+        setStatus(`${failures.join(' ')} ${guidance}`);
     }
 }
 
@@ -399,6 +441,8 @@ function setupNavigation() {
 }
 
 function setupMovieActions() {
+    if (!grid) return;
+
     grid.addEventListener('click', (event) => {
         const button = event.target.closest('button[data-action]');
         if (!button) return;
@@ -416,30 +460,42 @@ function setupMovieActions() {
         }
     });
 
-    document.getElementById('dialog-close').addEventListener('click', () => {
-        movieDialog.close();
-    });
-    movieDialog.addEventListener('click', (event) => {
-        if (event.target === movieDialog) movieDialog.close();
-    });
-    dialogWatchlist.addEventListener('click', () => {
-        if (state.selectedMovie) toggleWatchlist(state.selectedMovie);
-        updateDialog();
-    });
-    dialogWatched.addEventListener('click', () => {
-        if (state.selectedMovie) toggleWatched(state.selectedMovie);
-        updateDialog();
-    });
-    document.getElementById('save-rating').addEventListener('click', () => {
-        if (!state.selectedMovie) return;
-        const rating = Number(personalRating.value);
-        if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
-            setStatus('Choose a rating from 1 to 5 stars before saving.');
-            return;
-        }
-        updateSavedMovie(state.selectedMovie, { personalRating: rating });
-        updateDialog();
-    });
+    const dialogCloseButton = document.getElementById('dialog-close');
+    if (dialogCloseButton && movieDialog) {
+        dialogCloseButton.addEventListener('click', () => {
+            movieDialog.close();
+        });
+    }
+    if (movieDialog) {
+        movieDialog.addEventListener('click', (event) => {
+            if (event.target === movieDialog) movieDialog.close();
+        });
+    }
+    if (dialogWatchlist) {
+        dialogWatchlist.addEventListener('click', () => {
+            if (state.selectedMovie) toggleWatchlist(state.selectedMovie);
+            updateDialog();
+        });
+    }
+    if (dialogWatched) {
+        dialogWatched.addEventListener('click', () => {
+            if (state.selectedMovie) toggleWatched(state.selectedMovie);
+            updateDialog();
+        });
+    }
+    const saveRatingButton = document.getElementById('save-rating');
+    if (saveRatingButton) {
+        saveRatingButton.addEventListener('click', () => {
+            if (!state.selectedMovie) return;
+            const rating = Number(personalRating?.value ?? '');
+            if (!Number.isInteger(rating) || rating < 1 || rating > 5) {
+                setStatus('Choose a rating from 1 to 5 stars before saving.');
+                return;
+            }
+            updateSavedMovie(state.selectedMovie, { personalRating: rating });
+            updateDialog();
+        });
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -454,18 +510,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     const searchForm = document.querySelector('.search-form');
-    searchForm.addEventListener('submit', (event) => {
-        event.preventDefault();
-        window.clearTimeout(searchTimer);
-        fetchHomeMovies();
-    });
-    searchInput.addEventListener('input', () => {
-        state.requestId += 1;
-        window.clearTimeout(searchTimer);
-        searchTimer = window.setTimeout(fetchHomeMovies, 300);
-    });
-    genreSelect.addEventListener('change', fetchHomeMovies);
-    sortSelect.addEventListener('change', renderMovies);
+    if (searchForm) {
+        searchForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            window.clearTimeout(searchTimer);
+            fetchHomeMovies();
+        });
+    }
+    if (searchInput) {
+        searchInput.addEventListener('input', () => {
+            state.requestId += 1;
+            window.clearTimeout(searchTimer);
+            searchTimer = window.setTimeout(fetchHomeMovies, 300);
+        });
+    }
+    if (genreSelect) {
+        genreSelect.addEventListener('change', fetchHomeMovies);
+    }
+    if (sortSelect) {
+        sortSelect.addEventListener('change', renderMovies);
+    }
 
     setView(window.location.hash.slice(1) || 'home');
     loadInitialData();
