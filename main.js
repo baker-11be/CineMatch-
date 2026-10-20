@@ -8,6 +8,13 @@ import {
 } from './tmdbApi.js';
 import { loadWatchlist, saveWatchlist } from './storage.js';
 
+if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./service-worker.js')
+            .catch((error) => console.warn('Service worker registration failed:', error));
+    });
+}
+
 const PLACEHOLDER_IMG = 'images/poster-placeholder.svg';
 const state = {
     trendingMovies: [],
