@@ -22,7 +22,9 @@ const FILES = [
     'main.js',
     'tmdbApi.js',
     'storage.js',
-    'config.js'
+    'config.js',
+    'manifest.json',
+    'service-worker.js'
 ];
 const DIRS = ['images'];
 
